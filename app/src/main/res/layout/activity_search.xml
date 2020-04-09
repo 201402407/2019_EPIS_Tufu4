@@ -106,7 +106,7 @@
 
     </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/searchListViewPage"
             android:layout_width="match_parent"
             android:layout_height="@dimen/searchRecycleViewHeight"
@@ -114,10 +114,10 @@
             android:layout_marginRight="@dimen/myPageLayoutBetweenMargin"
             android:visibility="visible">
 
-        </android.support.v7.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
 
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/listTablayout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -128,5 +128,5 @@
         app:tabGravity="center"
         app:tabIndicatorColor="@color/colorWhite"
         app:tabSelectedTextColor="#FF5D8D"
-        app:tabTextAppearance="@style/tabText"></android.support.design.widget.TabLayout>
+        app:tabTextAppearance="@style/tabText"></com.google.android.material.tabs.TabLayout>
 </LinearLayout>

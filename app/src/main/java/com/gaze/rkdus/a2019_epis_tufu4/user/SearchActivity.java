@@ -1,5 +1,6 @@
 package com.gaze.rkdus.a2019_epis_tufu4.user;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -7,9 +8,12 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import com.gaze.rkdus.a2019_epis_tufu4.utils.GetAllEntrpsInfoService;
+import com.gaze.rkdus.a2019_epis_tufu4.utils.Prop;
+import com.google.android.material.tabs.TabLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -45,7 +49,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Serializable;
+
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
@@ -55,6 +59,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /*
  * 사용자
@@ -91,10 +98,10 @@ public class SearchActivity extends BaseActivity {
     int searchResultCount;
 
     private GestureDetector gestureDetector;
-    ArrayList<SearchResultData> searchResultList = new ArrayList<>();
-    ArrayList<SearchResultData> signUpAppList = new ArrayList<>();
-    ArrayList<SearchResultData> locationSearchList = new ArrayList<>(); // 지역 별 필터 중 검색어에 따른 조건을 갖춘 데이터
-    ArrayList<SearchResultData> locationSearchResultList = new ArrayList<>();   // 지역 별 필터 입힌 모든 데이터
+    ArrayList<Prop.EntrpsData> searchResultList = new ArrayList<>();
+    ArrayList<Prop.EntrpsData> signUpAppList = new ArrayList<>();
+    ArrayList<Prop.EntrpsData> locationSearchList = new ArrayList<>(); // 지역 별 필터 중 검색어에 따른 조건을 갖춘 데이터
+    ArrayList<Prop.EntrpsData> locationSearchResultList = new ArrayList<>();   // 지역 별 필터 입힌 모든 데이터
     SearchAsyncTask searchAsyncTask;
     SearchListAdapter adapter;
 
@@ -131,8 +138,9 @@ public class SearchActivity extends BaseActivity {
         tvSignUpApp = (TextView) findViewById(R.id.signUpAppText);
 
         // 시작 시 모든 리스트 가져오기
-        searchAsyncTask = new SearchAsyncTask();
-        searchAsyncTask.execute("/user/getHospitalData", "all"); // 모든 데이터 가져오기
+//        searchAsyncTask = new SearchAsyncTask();
+//        searchAsyncTask.execute("/entrps/getAllEntrpsInfo", "all"); // 모든 데이터 가져오기
+        getAllEntrpsInfo();
 
         // EditText 자판 리스너 이벤트
         eSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -170,6 +178,7 @@ public class SearchActivity extends BaseActivity {
 
         // 필터 이미지 클릭 이벤트
         ivFilterBtn.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
@@ -271,6 +280,30 @@ public class SearchActivity extends BaseActivity {
 
     }
 
+    @SuppressLint("CheckResult")
+    private void getAllEntrpsInfo() {
+        GetAllEntrpsInfoService getAllEntrpsInfoService = Prop.INSTANCE.getRetrofit().create(GetAllEntrpsInfoService.class);
+
+        //noinspection ResultOfMethodCallIgnored
+        getAllEntrpsInfoService.resultRepos()
+                .subscribeOn(Schedulers.io())   // 데이터를 보내는 쓰레드 및 함수
+                .observeOn(AndroidSchedulers.mainThread())  // 데이터를 받아서 사용하는 쓰레드 및 함수
+                .subscribe(item -> { // 통신 결과로 받은 Object
+                        if (item.isEmpty() || item == null) {
+
+                        }
+                        else {
+                            indexStartNum = 1;
+                            searchResultList = item;
+                            setTabIndex(item);
+                            setSearchListViewOfIndex(item, 1);
+                        }
+                    }
+                    , e -> {
+                        Log.d(TAG, e + "");
+                    });
+    }
+
     /*
     사용자가 탭을 눌렀을 때 호출
      */
@@ -299,7 +332,7 @@ public class SearchActivity extends BaseActivity {
                 showNextPage(arrayList, true);
                 break;
             default:
-                setSearchListView((ArrayList<SearchResultData>) arrayList, tabIndexNum);
+//                setSearchListView((ArrayList<SearchResultData>) arrayList, tabIndexNum);
                 break;
         }
     }
@@ -389,7 +422,7 @@ public class SearchActivity extends BaseActivity {
     /*
     현재 필터와 조건에 맞는 arraylist 반환
      */
-    private ArrayList<SearchResultData> getArrayListFromFilter() {
+    private ArrayList<Prop.EntrpsData> getArrayListFromFilter() {
         if(isSignUpApp) {
             return signUpAppList;
         }
@@ -405,7 +438,7 @@ public class SearchActivity extends BaseActivity {
     현재 필터와 조건에 맞는 arraylist 반환
     LocationFilter로 지역 별 필터에 따른 반환값만 제공.
      */
-    private ArrayList<SearchResultData> getArrayListFromLocationFilter() {
+    private ArrayList<Prop.EntrpsData> getArrayListFromLocationFilter() {
         if (locationFIlter)
             return locationSearchList;
         else
@@ -414,6 +447,7 @@ public class SearchActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
+
         // 배열과 AsyncTask 초기화
         searchResultList.clear();
         signUpAppList.clear();
@@ -451,7 +485,7 @@ public class SearchActivity extends BaseActivity {
     현재 위치로 찾기 클릭에 따른 찾기 온오프 기능 구현 함수
      */
     private void showListView() {
-        final ArrayList<SearchResultData> arrayList = getNeedToShowListView();
+        final ArrayList<Prop.EntrpsData> arrayList = getNeedToShowListView();
         Log.d(TAG, "showListView ArrayList size : " + arrayList.size());
         indexStartNum = 1;
         setTabIndex(arrayList);
@@ -462,7 +496,7 @@ public class SearchActivity extends BaseActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setSearchListView(arrayList, indexStartNum);
+//                        setSearchListView(arrayList, indexStartNum);
                     }
                 });
             }
@@ -491,15 +525,15 @@ public class SearchActivity extends BaseActivity {
 
         // 서버 접속 실행
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB)
-            searchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "/user/getHospitalData", "searchword");
+            searchAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "/user/getAllEntrpsInfo", "searchword");
         else
-            searchAsyncTask.execute("/user/getHospitalData", "searchword");
+            searchAsyncTask.execute("/user/getAllEntrpsInfo", "searchword");
     }
 
     /*
     searchList ArrayList에서 어플등록 off인 item 제거 후 signUpAppList에 넣기
      */
-    private void setSignUpAppList(ArrayList<SearchResultData> searchResultDataArrayList) {
+    private void setSignUpAppList(ArrayList<Prop.EntrpsData> searchResultDataArrayList) {
         Log.d(TAG, "setSignUpAppList start");
 
         // 검색 결과를 담은 ArrayList의 값이 없는 경우 함수 종료
@@ -514,14 +548,14 @@ public class SearchActivity extends BaseActivity {
 
         // System.arraycopy(searchList, 0, signUpAppList, 0, searchList.size()); // deep copy
         // signUpAppList = searchList; // copy
-        Iterator<SearchResultData> itemDataIterator = searchResultDataArrayList.iterator();
+        Iterator<Prop.EntrpsData> itemDataIterator = searchResultDataArrayList.iterator();
         int i = 0;
         while(itemDataIterator.hasNext()) {
-           SearchResultData searchResultData = itemDataIterator.next();
+            Prop.EntrpsData entrpsData = itemDataIterator.next();
 
             // 등록 여부 off인 값 추가
-            if(searchResultData.getBoolSIGNUP_APP()) {
-                signUpAppList.add(searchResultData);
+            if(entrpsData.getEntrpsMemberId() != null && entrpsData.getEntrpsMemberId().length() != 0) {
+                signUpAppList.add(entrpsData);
             }
             i++;
         }
@@ -530,7 +564,7 @@ public class SearchActivity extends BaseActivity {
     /*
     온오프에 따른 어플등록 업체만 보기 유무 설정 + 필터에 따른 ArrayList 정하고, 정렬한 뒤 ArrayList 반환하는 함수
      */
-    private ArrayList<SearchResultData> getNeedToShowListView() {
+    private ArrayList<Prop.EntrpsData> getNeedToShowListView() {
         Log.d(TAG, "getNeedToShowListView start");
         if (isSignUpApp) {
             Log.d(TAG, "어플등록 ㅇ");
@@ -540,39 +574,51 @@ public class SearchActivity extends BaseActivity {
         switch (filter) {
             case 3:
                 Log.d(TAG, "리뷰 개수 순");
-                Collections.sort(getArrayListFromFilter(), new Comparator<SearchResultData>() {    // 각 data들의 최다 예약 횟수를 비교하여 내림차순 정렬하기
-                    @Override
-                    public int compare(SearchResultData searchResultData, SearchResultData t1) {
-                        return String.valueOf(t1.getReservation_count()).compareTo(String.valueOf(searchResultData.getReservation_count()));
-                    }
-                });
+//                Collections.sort(getArrayListFromFilter(), new Comparator<Prop.EntrpsData>() {
+//                    @Override
+//                    public int compare(Prop.EntrpsData o1, Prop.EntrpsData o2) {
+//                        return String.valueOf()
+//                    }
+//                })
+//                Collections.sort(getArrayListFromFilter(), new Comparator<SearchResultData>() {    // 각 data들의 최다 예약 횟수를 비교하여 내림차순 정렬하기
+//                    @Override
+//                    public int compare(SearchResultData searchResultData, SearchResultData t1) {
+//                        return String.valueOf(t1.getReservation_count()).compareTo(String.valueOf(searchResultData.getReservation_count()));
+//                    }
+//                });
                 break;
             case 2:
                 Log.d(TAG, "평점 순");
-                Collections.sort(getArrayListFromFilter(), new Comparator<SearchResultData>() {    // 각 data들의 최다 예약 횟수를 비교하여 내림차순 정렬하기
-                    @Override
-                    public int compare(SearchResultData searchResultData, SearchResultData t1) {
-                        return String.valueOf(t1.getReview_total()).compareTo(String.valueOf(searchResultData.getReview_total()));
-                    }
-                });
+//                Collections.sort(getArrayListFromFilter(), new Comparator<SearchResultData>() {    // 각 data들의 최다 예약 횟수를 비교하여 내림차순 정렬하기
+//                    @Override
+//                    public int compare(SearchResultData searchResultData, SearchResultData t1) {
+//                        return String.valueOf(t1.getReview_total()).compareTo(String.valueOf(searchResultData.getReview_total()));
+//                    }
+//                });
                 break;
             case 1:
                 Log.d(TAG, "최다 예약 순");
-                Collections.sort(getArrayListFromFilter(), new Comparator<SearchResultData>() {    // 각 data들의 최다 예약 횟수를 비교하여 내림차순 정렬하기
-                    @Override
-                    public int compare(SearchResultData searchResultData, SearchResultData t1) {
-                        return String.valueOf(t1.getReview_count()).compareTo(String.valueOf(searchResultData.getReview_count()));
-                    }
-                });
+//                Collections.sort(getArrayListFromFilter(), new Comparator<SearchResultData>() {    // 각 data들의 최다 예약 횟수를 비교하여 내림차순 정렬하기
+//                    @Override
+//                    public int compare(SearchResultData searchResultData, SearchResultData t1) {
+//                        return String.valueOf(t1.getReview_count()).compareTo(String.valueOf(searchResultData.getReview_count()));
+//                    }
+//                });
                 break;
             default:    // 지역 별 필터만 있거나, 모든 필터를 해제한 경우.
                 Log.d(TAG, "필터 X.");
-                Collections.sort(getArrayListFromFilter(), new Comparator<SearchResultData>() {    // 각 data들의 최다 예약 횟수를 비교하여 내림차순 정렬하기
+                Collections.sort(getArrayListFromFilter(), new Comparator<Prop.EntrpsData>() {
                     @Override
-                    public int compare(SearchResultData searchResultData, SearchResultData t1) {
-                        return String.valueOf(t1.getHospital_name()).compareTo(String.valueOf(searchResultData.getHospital_name()));
+                    public int compare(Prop.EntrpsData o1, Prop.EntrpsData o2) {
+                        return o1.getEntrpsName().compareTo(o2.getEntrpsName());
                     }
                 });
+//                Collections.sort(getArrayListFromFilter(), new Comparator<SearchResultData>() {    // 각 data들의 최다 예약 횟수를 비교하여 내림차순 정렬하기
+//                    @Override
+//                    public int compare(SearchResultData searchResultData, SearchResultData t1) {
+//                        return String.valueOf(t1.getHospital_name()).compareTo(String.valueOf(searchResultData.getHospital_name()));
+//                    }
+//                });
                 break;
         }
         return getArrayListFromFilter();
@@ -671,14 +717,14 @@ public class SearchActivity extends BaseActivity {
             if(s.equals(null))
                 return;
             setSearchResultArray(s, type);
-            ArrayList<SearchResultData> arrayList = getNeedToShowListView();
+            ArrayList<Prop.EntrpsData> arrayList = getNeedToShowListView();
 
             if(arrayList.isEmpty())  // null check
                 Log.d(TAG, "getNeedToShowListView result is empty");
 
             indexStartNum = 1;
             setTabIndex(arrayList);
-            setSearchListView(arrayList, 1);
+//            setSearchListView(arrayList, 1);
         }
     }
 
@@ -740,14 +786,14 @@ public class SearchActivity extends BaseActivity {
     /*
     RecyclerView Item 개별 클릭 리스너 설정하는 함수
      */
-    private void setRecyclerViewItemClick(final ArrayList<SearchResultData> result, SearchListAdapter searchListAdapter) {
+    private void setRecyclerViewItemClick(final ArrayList<Prop.EntrpsData> result, SearchListAdapter searchListAdapter) {
         searchListAdapter.setItemClick(new SearchListAdapter.ItemClick() {
             @Override
             public void onClick(View view, int position) {
                 //해당 위치의 Data get
-                SearchResultData resultData = result.get(position);
+                Prop.EntrpsData resultData = result.get(position);
                 Intent intent = new Intent(getApplicationContext(), HospitalProfileActivity.class);
-                intent.putExtra("data", (Serializable) resultData);
+                intent.putExtra("data", resultData);
                 startActivity(intent);  // MessageTypeActivity 실행
             }
         });
@@ -756,8 +802,8 @@ public class SearchActivity extends BaseActivity {
     /*
     RecyclerView에 Tab, Page 별로 알맞게 결과 데이터를 넣고 출력하는 함수.
      */
-    private void setSearchListView(final ArrayList<SearchResultData> arrayList, int index) {
-
+    private void setSearchListViewOfIndex(final ArrayList<Prop.EntrpsData> arrayList, int index) {
+        Log.d(TAG, " is " + arrayList.size());
 //        String dimen = "@dimen/searchResultCount";
 //        String packageName = this.getPackageName();
 //        int temp = getResources().getIdentifier(dimen, "values", packageName);
@@ -769,7 +815,7 @@ public class SearchActivity extends BaseActivity {
             end = arrayList.size();
         else
             end = start + searchResultCount;
-        ArrayList<SearchResultData> result = new ArrayList<>();   // adapter에 넣기 위한 임시 arrayList 생성
+        ArrayList<Prop.EntrpsData> result = new ArrayList<>();   // adapter에 넣기 위한 임시 arrayList 생성
         for(int i = start; i < end; i++) {
             result.add(arrayList.get(i));
         }
@@ -785,6 +831,39 @@ public class SearchActivity extends BaseActivity {
         setRecyclerViewItemClick(result, adapter);
 
     }
+
+    /*
+    RecyclerView에 Tab, Page 별로 알맞게 결과 데이터를 넣고 출력하는 함수.
+     */
+//    private void setSearchListView(final ArrayList<SearchResultData> arrayList, int index) {
+//
+////        String dimen = "@dimen/searchResultCount";
+////        String packageName = this.getPackageName();
+////        int temp = getResources().getIdentifier(dimen, "values", packageName);
+//        Log.d(TAG, "이건 dimens searchResultCount 입니다 : " + searchResultCount);
+//
+//        int start = (index - 1) * searchResultCount;
+//        int end;
+//        if(start + searchResultCount >= arrayList.size())   // 만약 리스트로 출력하는 데이터가 dimens.xml에서 지정한 갯수보다 못채우는 경우
+//            end = arrayList.size();
+//        else
+//            end = start + searchResultCount;
+//        ArrayList<SearchResultData> result = new ArrayList<>();   // adapter에 넣기 위한 임시 arrayList 생성
+//        for(int i = start; i < end; i++) {
+//            result.add(arrayList.get(i));
+//        }
+//
+//        CustomLinearLayoutManager customLayoutManager = new CustomLinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
+//        searchRecyclerView.setLayoutManager(customLayoutManager);
+//        adapter = new SearchListAdapter(result);
+//        adapter.resetAll(result);
+//        searchRecyclerView.setAdapter(adapter);
+//        adapter.notifyDataSetChanged();
+//
+//        // RecyclerView 클릭 이벤트 초기화
+//        setRecyclerViewItemClick(result, adapter);
+//
+//    }
 
     /*
     RecyclerView Scroll 방지
@@ -820,18 +899,18 @@ public class SearchActivity extends BaseActivity {
                 searchResultList = gson.fromJson(jsonArray.toString(), listType);
 
                 if(filter == 4 || filter == 3) {    // 위치 별 선택한 경우
-                    Iterator<SearchResultData> itemDataIterator = locationSearchResultList.iterator();
+                    Iterator<Prop.EntrpsData> itemDataIterator = locationSearchResultList.iterator();
 
                     int i = 0;
                     while (itemDataIterator.hasNext()) {
-                        SearchResultData searchResultData = itemDataIterator.next();
+                        Prop.EntrpsData entrpsData = itemDataIterator.next();
 
                         // 중복된 객체가 있을 경우만 삭제 ㄴㄴ
                         // locationSearchList의 값에서 삭제시키자
-                        if (searchResultList.contains(searchResultData)) {
+                        if (searchResultList.contains(entrpsData)) {
                             Log.d(TAG, "하나라도있냐?");
-                            Log.d(TAG, "하나있네 : " + searchResultData.getHospital_name());
-                            locationSearchList.add(searchResultData);
+                            Log.d(TAG, "하나있네 : " + entrpsData.getEntrpsName());
+                            locationSearchList.add(entrpsData);
                             continue;
                         }
                         i++;
@@ -843,7 +922,7 @@ public class SearchActivity extends BaseActivity {
                 Log.d(TAG, "arrayList에 담기 성공!");
                 locationSearchResultList = gson.fromJson(jsonArray.toString(), listType);
 
-                Iterator<SearchResultData> itemDataIterator = locationSearchResultList.iterator();
+                Iterator<Prop.EntrpsData> itemDataIterator = locationSearchResultList.iterator();
                 if (!searchResultList.isEmpty()) {   // 검색 결과 리스트가 비어있지 않은 경우
                     if (TextUtils.isEmpty(searchWord)) {   // 처음 전체 검색한 뒤 location filter를 적용한 경우ㄹ
                         Log.d(TAG, "처음 전체 검색한 뒤 location filter를 적용한 경우");
@@ -852,14 +931,14 @@ public class SearchActivity extends BaseActivity {
                         Log.d(TAG, "검색한 키워드가 이미 있고, location filter를 적용한 경우");
                         int i = 0;
                         while (itemDataIterator.hasNext()) {
-                            SearchResultData searchResultData = itemDataIterator.next();
+                            Prop.EntrpsData entrpsData = itemDataIterator.next();
 
                             // 중복된 객체가 있을 경우만 삭제 ㄴㄴ
                             // locationSearchList의 값에서 삭제시키자
-                            if (searchResultList.contains(searchResultData)) {
+                            if (searchResultList.contains(entrpsData)) {
                                 Log.d(TAG, "하나라도있냐?");
-                                Log.d(TAG, "하나있네 : " + searchResultData.getHospital_name());
-                                locationSearchList.add(searchResultData);
+                                Log.d(TAG, "하나있네 : " + entrpsData.getEntrpsName());
+                                locationSearchList.add(entrpsData);
                                 continue;
                             }
                             i++;
@@ -906,7 +985,7 @@ public class SearchActivity extends BaseActivity {
             jsonObject.accumulate("searchword", searchWord); // 검색어 인코딩까지 수행
         }
         else if(type.equals("all")) {
-            jsonObject.accumulate("searchword", "allHospitalData"); // 검색어 인코딩까지 수행
+            jsonObject.accumulate("searchword", "allEntrpsData"); // 검색어 인코딩까지 수행
         }
         else if(type.equals("location")) {
             jsonObject.accumulate("location", location);
@@ -920,48 +999,48 @@ public class SearchActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-            switch (requestCode) {
-                case GET_FILTER:
-                    if(resultCode == RESULT_OK) {
-                        Log.d(TAG, "필터 팝업창에서 확인 누름!");
-                        if(intent.hasExtra("result"))   // 값 있는지 체크
-                            filter = intent.getIntExtra("result", 0);
+        super.onActivityResult(requestCode, resultCode, intent);
+        switch (requestCode) {
+            case GET_FILTER:
+                if (resultCode == RESULT_OK) {
+                    Log.d(TAG, "필터 팝업창에서 확인 누름!");
+                    if (intent.hasExtra("result"))   // 값 있는지 체크
+                        filter = intent.getIntExtra("result", 0);
 
-                        // 초기화
-                        signUpAppList.clear();
+                    // 초기화
+                    signUpAppList.clear();
 
-                        // 만약 지역 별 필터를 입힌 경우
-                        // locationSearchList에 새로 기입해야 함
-                        locationFIlter = intent.getBooleanExtra("locationFilter", false);
-                            if (locationFIlter) {
-                                Log.d(TAG, "locationFIlter true");
-                                if(intent.hasExtra("location")) {
-                                    // 초기화
-                                    locationSearchResultList.clear();
-                                    locationSearchList.clear();
+                    // 만약 지역 별 필터를 입힌 경우
+                    // locationSearchList에 새로 기입해야 함
+                    locationFIlter = intent.getBooleanExtra("locationFilter", false);
+                    if (locationFIlter) {
+                        Log.d(TAG, "locationFIlter true");
+                        if (intent.hasExtra("location")) {
+                            // 초기화
+                            locationSearchResultList.clear();
+                            locationSearchList.clear();
 
-                                    location = intent.getStringExtra("location");
-                                    searchAsyncTask = new SearchAsyncTask();
-                                    searchAsyncTask.execute("/user/getHospitalDataByAddress", "location");
-                                    return;
-                                }
-                            }
-
-                        Log.d(TAG, "locationFIlter false");
-                        ArrayList<SearchResultData> arrayList = getNeedToShowListView();
-                        indexStartNum = 1;
-
-                        Log.d(TAG, "getNeedToShowListView size : " + arrayList.size());
-                        setTabIndex(arrayList);
-                        setSearchListView(arrayList, indexStartNum);
-
+                            location = intent.getStringExtra("location");
+                            searchAsyncTask = new SearchAsyncTask();
+                            searchAsyncTask.execute("/user/getHospitalDataByAddress", "location");
+                            return;
+                        }
                     }
-                    else {
-                        Log.d(TAG, "팝업창에서 취소 누름!");
-                    }
-                    break;
-                default:
-                    break;
-            }
+
+                    Log.d(TAG, "locationFIlter false");
+                    ArrayList<Prop.EntrpsData> arrayList = getNeedToShowListView();
+                    indexStartNum = 1;
+
+                    Log.d(TAG, "getNeedToShowListView size : " + arrayList.size());
+                    setTabIndex(arrayList);
+//                    setSearchListView(arrayList, indexStartNum);
+
+                } else {
+                    Log.d(TAG, "팝업창에서 취소 누름!");
+                }
+                break;
+            default:
+                break;
+        }
     }
 }

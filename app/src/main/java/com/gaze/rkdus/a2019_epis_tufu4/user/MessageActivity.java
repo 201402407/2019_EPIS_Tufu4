@@ -892,36 +892,34 @@ public class MessageActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
         switch (requestCode) {
             case SELECT_RESERVATION:
-                if(resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     Log.d(TAG, "팝업창에서 확인 누름!");
                     messageAsyncTask = new MessageAsyncTask();
                     messageAsyncTask.execute("/user/putReservation", "send");
-                }
-                else {
+                } else {
                     Log.d(TAG, "팝업창에서 취소 누름!");
                 }
                 break;
             case CHECK_INDIVIDUALINFO:
-                if(resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     Log.d(TAG, "정보제공동의 팝업창에서 확인 누름!");
                     Toast.makeText(getApplicationContext(), "정보제공에 동의하셨습니다.", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     Log.d(TAG, "정보제공동의 팝업창에서 취소 누름!");
                     Toast.makeText(getApplicationContext(), "정보제공에 동의하지 않으셨습니다.", Toast.LENGTH_SHORT).show();
                     cbCheckIndividualInfo.setChecked(false);
                 }
                 break;
             case CHECK_IMMEDIATELYBUY:
-                if(resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     Log.d(TAG, "직접 구매 완료!");
                     Toast.makeText(getApplicationContext(), "직접 구매 확인되었습니다.", Toast.LENGTH_SHORT).show();
                     self_buy = 1;
                     cbImmediatelyBuy.setActivated(false);
-                }
-                else {
+                } else {
                     Log.d(TAG, "직접 구매 취소!");
                     Toast.makeText(getApplicationContext(), "직접 구매를 취소합니다.", Toast.LENGTH_SHORT).show();
                     self_buy = 0;
@@ -929,13 +927,12 @@ public class MessageActivity extends BaseActivity {
                 }
                 break;
             case CHECK_NEUTRALIZATIONSURGERY:
-                if(resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     Log.d(TAG, "중성화 수술 할래요!");
                     Toast.makeText(getApplicationContext(), "중성화 수술도 함께 예약합니다.", Toast.LENGTH_SHORT).show();
                     cbNeutralizationSurgery.setChecked(true);
                     neutralizationSurgery = 1;
-                }
-                else {
+                } else {
                     Log.d(TAG, "중성화 수술 안할래요!");
                     Toast.makeText(getApplicationContext(), "중성화 수술을 하지 않습니다.", Toast.LENGTH_SHORT).show();
                     cbNeutralizationSurgery.setChecked(false);
@@ -943,7 +940,7 @@ public class MessageActivity extends BaseActivity {
                 }
                 break;
             case SEARCH_POSTCODE:
-                if(resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     PostCodeItem postCodeItem = (PostCodeItem) intent.getSerializableExtra("data");
                     tvOwnerPostCode.setText(postCodeItem.getPostcd());
                     ownerPostCode = postCodeItem.getPostcd();
@@ -952,7 +949,7 @@ public class MessageActivity extends BaseActivity {
                 }
                 break;
             case SEARCH_REALPOSTCODE:
-                if(resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     PostCodeItem postCodeItem = (PostCodeItem) intent.getSerializableExtra("data");
                     tvOwnerRealPostCode.setText(postCodeItem.getPostcd());
                     ownerRealPostCode = postCodeItem.getPostcd();
@@ -961,11 +958,10 @@ public class MessageActivity extends BaseActivity {
                 }
                 break;
             case CHECK_PROXYSIGN:
-                if(resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     Log.d(TAG, "대리서명동의 팝업창에서 확인 누름!");
                     Toast.makeText(getApplicationContext(), "대리서명에 동의하셨습니다.", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     Log.d(TAG, "대리서명동의 팝업창에서 취소 누름!");
                     Toast.makeText(getApplicationContext(), "대리서명에 동의하지 않으셨습니다.", Toast.LENGTH_SHORT).show();
                     cbProxySign.setChecked(false);

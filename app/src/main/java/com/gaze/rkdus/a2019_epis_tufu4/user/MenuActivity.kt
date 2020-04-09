@@ -11,12 +11,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.support.annotation.RequiresApi
-import android.support.v4.view.ViewCompat.canScrollHorizontally
-import android.support.v4.view.ViewCompat.canScrollVertically
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.RequiresApi
+import androidx.core.view.ViewCompat.canScrollHorizontally
+import androidx.core.view.ViewCompat.canScrollVertically
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.util.Log
 import android.view.KeyEvent
@@ -25,7 +25,6 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
-import cn.trinea.android.view.autoscrollviewpager.AutoScrollViewPager
 import com.gaze.rkdus.a2019_epis_tufu4.BaseActivity
 import com.gaze.rkdus.a2019_epis_tufu4.CommunityActivity
 import com.gaze.rkdus.a2019_epis_tufu4.R
@@ -37,6 +36,7 @@ import com.gaze.rkdus.a2019_epis_tufu4.utils.userUtil.Companion.checkEditText
 import kotlinx.android.synthetic.main.activity_menu.*
 import kotlinx.android.synthetic.main.activity_menu.view.*
 import org.json.JSONArray
+import pl.pzienowicz.autoscrollviewpager.AutoScrollViewPager
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -78,7 +78,7 @@ class MenuActivity : BaseActivity() {
         setPackageItems()
 
 
-        val gridLayoutManager = customLayoutManager(this, 2)
+        val gridLayoutManager = CustomLayoutManager(this, 2)
         packageRecyclerView.layoutManager = gridLayoutManager
 
         adapter = PackageListAdapter(itemList)
@@ -111,8 +111,9 @@ class MenuActivity : BaseActivity() {
 
         val scrollAdapter = MenuPagerAdapter(this, data)
         autoViewPager.adapter = scrollAdapter //Auto Viewpager에 Adapter 장착
-        autoViewPager.interval = 3000 // 페이지 넘어갈 시간 간격 설정
-        autoViewPager.slideBorderMode = AutoScrollViewPager.SLIDE_BORDER_MODE_CYCLE
+        autoViewPager.setInterval(3000) // 페이지 넘어갈 시간 간격 설정
+        autoViewPager.setSlideBorderMode(AutoScrollViewPager.SlideBorderMode.CYCLE);
+        autoViewPager.setCycle(true)
         autoViewPager.startAutoScroll() //Auto Scroll 시작
     }
 
@@ -122,7 +123,7 @@ class MenuActivity : BaseActivity() {
     }
 
     // 예약 건수 불러오기
-    fun setReservationCount() {
+    private fun setReservationCount() {
         var jsonStr = loadJSONFile("myReservation.json")
         tvReservationCount.text = "예약 : 0건"
         if (!TextUtils.isEmpty(jsonStr)) {
@@ -171,7 +172,7 @@ class MenuActivity : BaseActivity() {
         false
     }
 
-    class customLayoutManager(context: Context?, spanCount: Int) : GridLayoutManager(context, spanCount) {
+    class CustomLayoutManager(context: Context?, spanCount: Int) : GridLayoutManager(context, spanCount) {
         override fun canScrollVertically(): Boolean { // 세로스크롤 막기
             return false
         }

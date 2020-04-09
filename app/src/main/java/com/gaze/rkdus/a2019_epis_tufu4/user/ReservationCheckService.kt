@@ -15,7 +15,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import android.content.Context
-import android.support.v4.app.NotificationCompat
+import androidx.core.app.NotificationCompat
 import com.gaze.rkdus.a2019_epis_tufu4.R
 import com.gaze.rkdus.a2019_epis_tufu4.popup.ManagementPopupActivity
 

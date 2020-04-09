@@ -2,8 +2,8 @@ package com.gaze.rkdus.a2019_epis_tufu4.user;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -20,7 +20,6 @@ import com.gaze.rkdus.a2019_epis_tufu4.item.MyReservationAllData;
 import com.gaze.rkdus.a2019_epis_tufu4.item.MyReservationData;
 import com.gaze.rkdus.a2019_epis_tufu4.item.MyReservationListData;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;

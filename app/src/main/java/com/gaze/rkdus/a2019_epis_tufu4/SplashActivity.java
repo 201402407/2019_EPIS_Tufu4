@@ -1,9 +1,14 @@
 package com.gaze.rkdus.a2019_epis_tufu4;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
@@ -12,11 +17,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import static com.kakao.util.maps.helper.Utility.getPackageInfo;
+
 public class SplashActivity extends Activity {
     private Handler mHandler;
     private Runnable mRunnable;
-
-    public String TAG = "LogGoGo";
+    public static String TAG = "LogGoGo";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +41,7 @@ public class SplashActivity extends Activity {
         sb.append(" widthPixels : " + dm.widthPixels);
         sb.append(" heightPixels : " + dm.heightPixels);
         Log.d(TAG, sb.toString());
+//        Log.d(TAG, getKeyHash(getApplicationContext()));
 
         ImageView imageView = findViewById(R.id.splash);
 //        Glide.with(this)
@@ -55,6 +65,23 @@ public class SplashActivity extends Activity {
         mHandler = new Handler();
 //        // mRunnable 내부 run() 실행하려면 기다려야 하는 delayMillis
         mHandler.postDelayed(mRunnable, 3000);
+    }
+
+    public static String getKeyHash(final Context context) {
+        PackageInfo packageInfo = getPackageInfo(context, PackageManager.GET_SIGNATURES);
+        if (packageInfo == null)
+            return null;
+
+        for (Signature signature : packageInfo.signatures) {
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                return Base64.encodeToString(md.digest(), Base64.NO_WRAP);
+            } catch (NoSuchAlgorithmException e) {
+                Log.d(TAG, "Unable to get MessageDigest. signature=" + signature);
+            }
+        }
+        return null;
     }
 
     @Override

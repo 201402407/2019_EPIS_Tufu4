@@ -1,7 +1,7 @@
 package com.gaze.rkdus.a2019_epis_tufu4.user;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import com.gaze.rkdus.a2019_epis_tufu4.BaseActivity;

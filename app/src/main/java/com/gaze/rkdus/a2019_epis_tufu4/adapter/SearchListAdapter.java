@@ -1,8 +1,8 @@
 package com.gaze.rkdus.a2019_epis_tufu4.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +11,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import android.widget.Toast;
-
 import com.gaze.rkdus.a2019_epis_tufu4.R;
 import com.gaze.rkdus.a2019_epis_tufu4.item.SearchResultData;
+import com.gaze.rkdus.a2019_epis_tufu4.utils.Prop;
 
 /*
 SearchActivity RecyclerView의 Adapter
@@ -22,7 +21,7 @@ SearchActivity RecyclerView의 Adapter
 public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.ItemViewHolder> {
 
     // adapter에 들어갈 list 입니다.
-    private ArrayList<SearchResultData> listData;
+    private ArrayList<Prop.EntrpsData> entrpsList;
     private Context context;
 
     //아이템 클릭시 실행 함수
@@ -36,16 +35,15 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.It
         this.itemClick = itemClick;
     }
 
-    public SearchListAdapter(ArrayList<SearchResultData> arrayList) {
-        listData = arrayList;
+    public SearchListAdapter(ArrayList<Prop.EntrpsData> list) {
+        this.entrpsList = list;
     }
 
-    public void resetAll(ArrayList<SearchResultData> newArrayList) { ;
+    public void resetAll(ArrayList<Prop.EntrpsData> newArrayList) { ;
 
-        this.listData = null;
-        this.listData = newArrayList;
+        this.entrpsList = null;
+        this.entrpsList = newArrayList;
     }
-
 
     // RecyclerView의 핵심인 ViewHolder 입니다.
     // 여기서 subView를 setting 해줍니다.
@@ -63,11 +61,11 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.It
             signUpAppImage = itemView.findViewById(R.id.signUpAppImage);
         }
 
-        void onBind(SearchResultData data) {
-            hospitalNameText.setText(data.getHospital_name());
-            ceoNameText.setText(data.getCeo_name());
+        void onBind(Prop.EntrpsData data) {
+            hospitalNameText.setText(data.getEntrpsName());
+            ceoNameText.setText(data.getEntrpsRepresentName());
             //ceoNameText.setText(String.valueOf(data.getRESERVATION_COUNT()));
-            if(data.getBoolSIGNUP_APP())    // 등록 시
+            if(data.getEntrpsMemberId() != null && data.getEntrpsMemberId().length() != 0)    // 등록 시
                 signUpAppImage.setImageResource(R.drawable.search_signupappoicon);
         }
     }
@@ -95,17 +93,17 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.It
             }
         });
 
-        holder.onBind(listData.get(position));
+        holder.onBind(entrpsList.get(position));
     }
 
     @Override
     public int getItemCount() {
         // RecyclerView의 총 개수 입니다.
-        return listData.size();
+        return entrpsList.size();
     }
 
-    void addItem(SearchResultData searchResultData) {
+    void addItem(Prop.EntrpsData entrpsData) {
         // 외부에서 item을 추가시킬 함수입니다.
-        listData.add(searchResultData);
+        entrpsList.add(entrpsData);
     }
 }

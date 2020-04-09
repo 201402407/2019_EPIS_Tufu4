@@ -1,8 +1,10 @@
 package com.gaze.rkdus.a2019_epis_tufu4.user;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -10,7 +12,12 @@ import android.widget.Toast;
 import com.gaze.rkdus.a2019_epis_tufu4.BaseActivity;
 import com.gaze.rkdus.a2019_epis_tufu4.GlobalApplication;
 import com.gaze.rkdus.a2019_epis_tufu4.R;
-import com.gaze.rkdus.a2019_epis_tufu4.popup.NicnamePopupActivity;
+import com.gaze.rkdus.a2019_epis_tufu4.item.SearchResultData;
+import com.gaze.rkdus.a2019_epis_tufu4.popup.NicknamePopupActivity;
+import com.gaze.rkdus.a2019_epis_tufu4.utils.AddEntrpsInfoService;
+import com.gaze.rkdus.a2019_epis_tufu4.utils.Prop;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.KakaoSDK;
 import com.kakao.auth.Session;
@@ -21,22 +28,28 @@ import com.kakao.usermgmt.response.MeV2Response;
 import com.kakao.util.exception.KakaoException;
 import com.kakao.util.helper.log.Logger;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.gaze.rkdus.a2019_epis_tufu4.user.SearchActivity.StringToJSON;
 
@@ -123,6 +136,139 @@ public class UserLoginActivity extends BaseActivity {
     protected void redirectSignupActivity() {
         Toast.makeText(getApplicationContext(), "카카오톡 아이디로 자동 로그인 되었습니다.", Toast.LENGTH_SHORT).show();
         checkExistNickname();
+//        String temp = loadJSONFile();
+//        getArrayList(temp);
+    }
+
+
+    /**
+     * json 데이터를 DB에 저장하기 위함. 밑 함수 3개.
+     * @param str
+     */
+    private void getArrayList(String str) {
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(str);
+            Log.d(TAG, "putJSONInArrayList start");
+            JSONArray jsonArray = jsonObject.getJSONArray("data");
+//        // Gson사용. JSONArray to ArrayList
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<Prop.EntrpsJsonData>>(){}.getType();
+
+            ArrayList<Prop.EntrpsJsonData> list = new ArrayList<Prop.EntrpsJsonData>();
+            list = gson.fromJson(jsonArray.toString(), listType);
+            Log.d(TAG, list.size() + " a ");
+            int cnt1 = 0, cnt2 = 0, cnt3 = 0, cnt4 = 0, cnt5 = 0;
+            for(Prop.EntrpsJsonData data : list) {
+                if(data.getADDR() == null) {
+                    cnt1++;
+                }
+                if(data.getENTRPS_NM() == null) {
+                    cnt2++;
+                }
+                if(data.getRPRSNTV_NM() == null) {
+                    cnt3++;
+                }
+                if(data.getENTRPS_TELNO() == null) {
+                    cnt4++;
+                }
+                if(data.getDETAIL_ADDR() == null) {
+                    cnt5++;
+                }
+//                Log.d(TAG, data.getADDR() + ", " + data.getENTRPS_NM() + ", " + data.getRPRSNTV_NM() + ", " + data.getENTRPS_TELNO() + ", " + data.getDETAIL_ADDR());
+            }
+            Log.d(TAG, cnt1 + " is 1 " + cnt2 + " is 2 " + cnt3 + " is 3 " + cnt4 + " is 4 " + cnt5 + " is 5 ");
+            setEntrpsJson(list);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static int index = 3800;
+    static boolean check = false;
+    private void setEntrpsJson(ArrayList<Prop.EntrpsJsonData> list) {
+        ArrayList<Prop.EntrpsJsonData> temp = new ArrayList<Prop.EntrpsJsonData>();
+        int max = 100;
+        if(index + max >= list.size()) {
+            max = list.size() - index;
+            check = true;
+        }
+        for(int i = index; i < index + max; i++) {
+            temp.add(list.get(i));
+        }
+        index += max;
+//        if(!check) {
+            sendEntrpsJson(list, temp);
+//        }
+    }
+    @SuppressLint("CheckResult")
+    private void sendEntrpsJson(ArrayList<Prop.EntrpsJsonData> list, ArrayList<Prop.EntrpsJsonData> temp) {
+        AddEntrpsInfoService addEntrpsInfoService = Prop.INSTANCE.getRetrofit().create(AddEntrpsInfoService.class);
+        Prop.AllEntrpsJsonData datas = new Prop.AllEntrpsJsonData(temp);
+        addEntrpsInfoService.resultRepos(datas)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(item -> {
+                    if(item.getResultCode().equals("success")) {
+                        Log.d(TAG, "success : " + index);
+                        if(!check) {
+                            new Handler().postDelayed(new Runnable() {
+                                @SuppressLint("CheckResult")
+                                @Override
+                                public void run() {
+                                    setEntrpsJson(list);
+//                                Log.d(TAG, "ASD");
+                                }
+                            }, 2000);
+                        }
+                    }
+                }, e -> {
+                    Log.d(TAG, "checkStatusOfRide " + e);
+                });
+    }
+
+    /*
+    json 파일 불러와서 String으로 리턴하기
+     */
+    private String loadJSONFile() {
+        String json = "";
+
+        try {
+            InputStream is = getAssets().open("vowow_entrps_list.json");
+            int fileSize = is.available();
+
+            byte[] buffer = new byte[fileSize];
+            is.read(buffer);
+            is.close();
+
+            json = new String(buffer, "UTF-8");
+            Log.d(TAG, fileSize + " , " + json.length());
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+
+        return json;
+
+//        Log.d(TAG, "loadJSONFIle start")
+//        var result: String? = null
+//
+//        var fileinputStream: FileInputStream? = null
+//        try {
+//            fileinputStream = openFileInput(filename)
+//            val size = fileinputStream!!.available()
+//            val buffer = ByteArray(size)
+//            fileinputStream.read(buffer)
+//            fileinputStream.close()
+//            result = String(buffer, charset("UTF-8"))
+//        } catch (e: FileNotFoundException) {
+//            Log.d(TAG, "사전에 등록증을 저장한 내역이 없습니다.")
+//            return null
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        }
+//        return result
     }
 
     /*
@@ -130,7 +276,7 @@ public class UserLoginActivity extends BaseActivity {
      */
     private void checkExistNickname() {
         NicknameAsyncTask nicknameAsyncTask = new NicknameAsyncTask();
-        nicknameAsyncTask.execute("/user/idCheck");
+        nicknameAsyncTask.execute("/user/getNickname");
     }
 
     private class NicknameAsyncTask extends AsyncTask<String, Void, String> {
@@ -142,7 +288,7 @@ public class UserLoginActivity extends BaseActivity {
                 // String type, ownerName, address, hp, petName, race, petColor, petBirth, neutralization, petGender;
                 JSONObject jsonObject = new JSONObject();
                 // Message에 담은 모든 정보 JSONObject에 담기
-                jsonObject.accumulate("id", KAKAO_ID); // key JSONObject에 담기
+                jsonObject.accumulate("userId", KAKAO_ID); // key JSONObject에 담기
 
                 // POST 전송방식을 위한 설정
                 HttpURLConnection con = null;
@@ -207,18 +353,18 @@ public class UserLoginActivity extends BaseActivity {
             else {
                 JSONObject jsonObject = StringToJSON(result);
                 try {
-                    String getResult = jsonObject.getString("result");
+                    int getResult = jsonObject.getInt("resultCode");
                     Log.d(TAG, "result : " + getResult);
-                    if (getResult.equals("null")) {
+                    if (getResult == 0) {
                         Toast.makeText(getApplicationContext(), "닉네임이 없습니다. 닉네임을 생성해주세요.", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(getApplicationContext(), NicnamePopupActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), NicknamePopupActivity.class);
                         startActivity(intent);
                         finish();
                     }
                     else {
-                        Log.d(TAG, "result : " + result);
+                        NICKNAME = jsonObject.getString("nickname");
+                        Toast.makeText(getApplicationContext(), NICKNAME + " 님,\n반갑습니다!", Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
-                        NICKNAME = getResult;
                         startActivity(intent);
                         finish();
                     }

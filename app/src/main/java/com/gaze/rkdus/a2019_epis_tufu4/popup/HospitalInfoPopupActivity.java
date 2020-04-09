@@ -2,7 +2,7 @@ package com.gaze.rkdus.a2019_epis_tufu4.popup;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebSettings;

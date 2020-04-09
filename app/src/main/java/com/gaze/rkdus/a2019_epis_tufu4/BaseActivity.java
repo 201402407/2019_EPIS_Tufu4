@@ -1,9 +1,8 @@
 package com.gaze.rkdus.a2019_epis_tufu4;
 
-import android.app.Activity;
 import android.graphics.Typeface;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import java.net.HttpURLConnection;
 public class BaseActivity extends AppCompatActivity {
     public Typeface mTypeface = null;
     public final static String TAG = "LogGoGo";
-    public static final String SERVER_URL = "http://vowow.cafe24app.com";
+    public static final String SERVER_URL = "http://13.125.144.161:8000";
     public static String KAKAO_ID = null;    // 0 : null
     public static String NICKNAME = null;
 

@@ -6,15 +6,14 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.gaze.rkdus.a2019_epis_tufu4.user.UserLoginActivity;
-import com.kakao.util.helper.Utility;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

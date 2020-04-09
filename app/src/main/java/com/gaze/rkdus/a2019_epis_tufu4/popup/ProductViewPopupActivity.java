@@ -1,8 +1,8 @@
 package com.gaze.rkdus.a2019_epis_tufu4.popup;
 
 import android.content.Intent;
-import android.databinding.BindingAdapter;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,7 +12,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.gaze.rkdus.a2019_epis_tufu4.BaseActivity;
-import com.gaze.rkdus.a2019_epis_tufu4.MainActivity;
 import com.gaze.rkdus.a2019_epis_tufu4.databinding.ActivityProductViewPopupBinding;
 import com.gaze.rkdus.a2019_epis_tufu4.R;
 import com.gaze.rkdus.a2019_epis_tufu4.item.ProductItemData;
@@ -108,15 +107,15 @@ public class ProductViewPopupActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
         switch (requestCode) {
             case CHECK_PAY:
-                if(resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     Log.d(TAG, "결제 완료.");
                     Toast.makeText(getApplicationContext(), "결제가 완료되었습니다.", Toast.LENGTH_LONG).show();
                     setResult(RESULT_OK);
                     finish();
-                }
-                else {
+                } else {
                     Log.d(TAG, "결제 실패.");
                 }
                 break;

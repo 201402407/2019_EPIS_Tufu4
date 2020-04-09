@@ -1,29 +1,20 @@
 package com.gaze.rkdus.a2019_epis_tufu4.popup;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.gaze.rkdus.a2019_epis_tufu4.BaseActivity;
 import com.gaze.rkdus.a2019_epis_tufu4.R;
-import com.gaze.rkdus.a2019_epis_tufu4.adapter.HospitalReviewListAdapter;
 import com.gaze.rkdus.a2019_epis_tufu4.adapter.ProductPopupListAdapter;
-import com.gaze.rkdus.a2019_epis_tufu4.adapter.SearchListAdapter;
-import com.gaze.rkdus.a2019_epis_tufu4.item.PostCodeItem;
 import com.gaze.rkdus.a2019_epis_tufu4.item.ProductItemData;
-import com.gaze.rkdus.a2019_epis_tufu4.item.ReviewListItem;
-import com.gaze.rkdus.a2019_epis_tufu4.item.SearchResultData;
-import com.gaze.rkdus.a2019_epis_tufu4.user.HospitalProfileActivity;
 import com.gaze.rkdus.a2019_epis_tufu4.utils.ProductService;
-import com.gaze.rkdus.a2019_epis_tufu4.utils.ReviewService;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -41,7 +32,6 @@ import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.HEAD;
 
 public class ProductPopupActivity extends BaseActivity {
     RecyclerView productRecyclerView;

@@ -1,7 +1,6 @@
 package com.gaze.rkdus.a2019_epis_tufu4.item;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.Serializable;
 

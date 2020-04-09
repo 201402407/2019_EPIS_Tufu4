@@ -2,9 +2,9 @@ package com.gaze.rkdus.a2019_epis_tufu4.popup
 
 import android.content.Intent
 import android.os.Build
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -117,7 +117,7 @@ class ReviewPopupActivity : BaseActivity() {
 
     }
 
-    private val touchListener = View.OnTouchListener { v, event ->
+    private val touchListener = View.OnTouchListener { v, _ ->
         // 전부 회색으로 초기화
         starFirst.setImageResource(R.drawable.review_notcoloredstar)
         starSecond.setImageResource(R.drawable.review_notcoloredstar)

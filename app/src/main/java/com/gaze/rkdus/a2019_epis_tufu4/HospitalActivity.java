@@ -5,9 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -15,15 +15,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.gaze.rkdus.a2019_epis_tufu4.BaseActivity;
-import com.gaze.rkdus.a2019_epis_tufu4.CommunityActivity;
-import com.gaze.rkdus.a2019_epis_tufu4.FinishReservationActivity;
-import com.gaze.rkdus.a2019_epis_tufu4.NewReservationActivity;
-import com.gaze.rkdus.a2019_epis_tufu4.R;
-import com.gaze.rkdus.a2019_epis_tufu4.StatusActivity;
-import com.gaze.rkdus.a2019_epis_tufu4.WaitReservationActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;

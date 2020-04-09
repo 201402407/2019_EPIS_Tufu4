@@ -3,8 +3,8 @@ package com.gaze.rkdus.a2019_epis_tufu4.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -19,12 +19,9 @@ import com.gaze.rkdus.a2019_epis_tufu4.item.MyReservationAllData;
 import com.gaze.rkdus.a2019_epis_tufu4.item.MyReservationData;
 import com.gaze.rkdus.a2019_epis_tufu4.item.MyReservationListData;
 import com.gaze.rkdus.a2019_epis_tufu4.popup.ImageTextPopupActivity;
-import com.gaze.rkdus.a2019_epis_tufu4.popup.MessagePopupActivity;
 import com.gaze.rkdus.a2019_epis_tufu4.popup.ReviewPopupActivity;
 import com.gaze.rkdus.a2019_epis_tufu4.user.MessageActivity;
 import com.gaze.rkdus.a2019_epis_tufu4.user.MyPageActivity;
-
-import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
