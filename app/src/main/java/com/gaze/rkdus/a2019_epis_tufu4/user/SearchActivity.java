@@ -112,6 +112,7 @@ public class SearchActivity extends BaseActivity {
     TextView tvSignUpApp;
     CheckBox cbSignUpApp;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -332,7 +333,7 @@ public class SearchActivity extends BaseActivity {
                 showNextPage(arrayList, true);
                 break;
             default:
-//                setSearchListView((ArrayList<SearchResultData>) arrayList, tabIndexNum);
+                setSearchListViewOfIndex((ArrayList<Prop.EntrpsData>) arrayList, tabIndexNum);
                 break;
         }
     }
@@ -496,7 +497,7 @@ public class SearchActivity extends BaseActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-//                        setSearchListView(arrayList, indexStartNum);
+                        setSearchListViewOfIndex(arrayList, indexStartNum);
                     }
                 });
             }
@@ -635,7 +636,7 @@ public class SearchActivity extends BaseActivity {
         protected String doInBackground(String... strings) {
             Log.d(TAG, "SearchAsyncTask doInBackground");
 
-            String search_url = SERVER_URL + strings[0];    // URL
+            String search_url = Prop.INSTANCE.serverUrl + strings[0];    // URL
             type = strings[1];
             // POST 전송방식을 위한 설정
             HttpURLConnection con = null;

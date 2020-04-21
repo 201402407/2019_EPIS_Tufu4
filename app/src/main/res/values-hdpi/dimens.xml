@@ -2,48 +2,28 @@
 <resources>
 
     <!-- MenuActivity -->
-    <dimen name="menuImgWidth">150dp</dimen>
-    <dimen name="menuImgHeight">100dp</dimen>
     <dimen name="statusBarHeight">50dp</dimen>
     <dimen name="menuMargin">20dp</dimen>
 
     <!-- TypeActivity -->
-    <dimen name="typeImgWidth">280dp</dimen>
     <dimen name="typeImgHeight">130dp</dimen>
-    <dimen name="typeMargin">23dp</dimen>
 
     <!-- MessageActivity -->
-    <dimen name="messageWidth">300dp</dimen>
-    <dimen name="messageHeight">100dp</dimen>
-    <dimen name="messageSubjectHeight">40dp</dimen>
-    <dimen name="messageMarginTop">15dp</dimen>
 
-    <dimen name="messageTextWidth">60dp</dimen>
-    <dimen name="messageTextHeight">100dp</dimen>
-    <dimen name="messageEditTextWidth">200dp</dimen>
     <dimen name="messageEditTextHeight">100dp</dimen>
 
 
     <!-- MessageTypeActivity -->
-    <dimen name="messageTypeImgWidth">100dp</dimen>
-    <dimen name="messageTypeImgHeight">100dp</dimen>
-    <dimen name="messageTypeMargin">20dp</dimen>
 
     <!-- FindActivity -->
-    <dimen name="searchBarWidth">300dp</dimen>
     <dimen name="searchBarHeight">40dp</dimen>
     <dimen name="searchBarMarginTop">20dp</dimen>
 
     <dimen name="searchBtnWidth">30dp</dimen>
-    <dimen name="searchBtnHeight">30dp</dimen>
     <dimen name="searchBtnMarginLeft">10dp</dimen>
     <dimen name="searchBtnMarginRight">10dp</dimen>
 
     <!-- HowToRegActivity -->
-    <dimen name="regInfoImgWidth">180dp</dimen>
-    <dimen name="regInfoImgHeight">180dp</dimen>
-    <dimen name="titleFontSize">15dp</dimen>
-    <dimen name="regInfoBtnHeight">30dp</dimen>
 
     <!-- MainActivity -->
     <dimen name="mainLogoWidth">160dp</dimen>
@@ -52,34 +32,17 @@
     <dimen name="mainStartImgWidth">65dp</dimen>
     <dimen name="mainStartImgHeight">65dp</dimen>
     <dimen name="mainBtnBetweenMargin">35dp</dimen>
-    <dimen name="mainImgWidth">200dp</dimen>
     <dimen name="mainImgHeight">350dp</dimen>
 
     <!-- RegisterActivity -->
-    <dimen name="textSizeMain">13sp</dimen>
-    <dimen name="textSizeBig">7dp</dimen>
     <dimen name="textSizeMid">6dp</dimen>
     <dimen name="textSizeSmall">5dp</dimen>
-    <dimen name="regiPdf">20dp</dimen>
-    <dimen name="regiPdfMargin">15dp</dimen>
     <dimen name="regiImageHeight">460dp</dimen>
-    <dimen name="regiTableMarginLeft">65dp</dimen>
-    <dimen name="regiTableMarginRight">30dp</dimen>
-    <dimen name="regiTableMarginTop">124dp</dimen>
     <dimen name="regiOwnerTableTop">5dp</dimen>
     <dimen name="regiResidentTop">4dp</dimen>
     <dimen name="regiPhoneTableLeft">20dp</dimen>
     <dimen name="regiTableAddrHeight">20dp</dimen>
-    <dimen name="regiTableAddrTop">5dp</dimen>
     <dimen name="regiTableAddrLeft">10dp</dimen>
-    <dimen name="regiAnimalTableHeight">15dp</dimen>
-    <dimen name="regiAnimalTableLeft">63dp</dimen>
-    <dimen name="regiAnimalTableRight">30dp</dimen>
-    <dimen name="regiAnimalTableTop">193dp</dimen>
-    <dimen name="regiSignTableWidth">126dp</dimen>
-    <dimen name="regiSignTableBottom">114dp</dimen>
-    <dimen name="regiSignTableLeft">85dp</dimen>
-    <dimen name="regiSignTableRight">27dp</dimen>
     <dimen name="regiSignTablePaddingRight">40dp</dimen>
     <dimen name="regiSignTablePaddingTop">5dp</dimen>
     <dimen name="regiSignWidth">25dp</dimen>
@@ -120,6 +83,5 @@
     <dimen name="v_textSSmall">13sp</dimen>
     <dimen name="v_textSmall">14sp</dimen>
 
-    <dimen name="vaccine_textSSmall">11sp</dimen>
     <dimen name="vaccine_textSmall">12sp</dimen>
 </resources>

@@ -1,23 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="neutralizationArray">
-        <item>예</item>
-        <item>아니오</item>
-    </string-array>
-
-    <string-array name="petGenderArray">
-        <item>남성</item>
-        <item>여성</item>
-        <item>중성</item>
-    </string-array>
 
     <string-array name="select">
         <item>작성자로 검색</item>
         <item>제목으로 검색</item>
-    </string-array>
-
-    <string-array name="account">
-
     </string-array>
 
 

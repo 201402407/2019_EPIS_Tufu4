@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import androidx.annotation.RequiresApi
 import android.text.TextUtils
 import android.util.Log
 import android.view.MotionEvent
@@ -14,19 +13,18 @@ import android.widget.AdapterView
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.gaze.rkdus.a2019_epis_tufu4.BaseActivity
 import com.gaze.rkdus.a2019_epis_tufu4.R
 import com.gaze.rkdus.a2019_epis_tufu4.adapter.MessageSpinnerAdapter
 import com.gaze.rkdus.a2019_epis_tufu4.item.HealthCheckupReservationData
 import com.gaze.rkdus.a2019_epis_tufu4.item.MyReservationListData
-import com.gaze.rkdus.a2019_epis_tufu4.item.VaccineReservationData
+import com.gaze.rkdus.a2019_epis_tufu4.utils.Prop
 import com.gaze.rkdus.a2019_epis_tufu4.utils.ReservationService
 import com.gaze.rkdus.a2019_epis_tufu4.utils.userUtil.Companion.setSpinnerMaxHeight
-import com.google.gson.Gson
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_health_checkup_message_acitivty.*
-import kotlinx.android.synthetic.main.activity_vaccine_message.*
 import kotlinx.android.synthetic.main.activity_vaccine_message.etOwnerName
 import kotlinx.android.synthetic.main.activity_vaccine_message.etOwnerPhoneNum1
 import kotlinx.android.synthetic.main.activity_vaccine_message.etOwnerPhoneNum2
@@ -192,7 +190,7 @@ class HealthCheckupMessageActivity : BaseActivity() {
                     val reservationService: ReservationService = Retrofit.Builder()
                             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                             .addConverterFactory(GsonConverterFactory.create())
-                            .baseUrl(SERVER_URL)
+                            .baseUrl(Prop.serverUrl)
                             .client(OkHttpClient())
                             .build()
                             .create(ReservationService::class.java)

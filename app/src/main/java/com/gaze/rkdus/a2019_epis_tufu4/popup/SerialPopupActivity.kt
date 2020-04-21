@@ -1,6 +1,5 @@
 package com.gaze.rkdus.a2019_epis_tufu4.popup
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +8,7 @@ import android.view.MotionEvent
 import android.widget.Toast
 import com.gaze.rkdus.a2019_epis_tufu4.BaseActivity
 import com.gaze.rkdus.a2019_epis_tufu4.R
+import com.gaze.rkdus.a2019_epis_tufu4.utils.Prop
 import com.gaze.rkdus.a2019_epis_tufu4.utils.SerialService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -42,7 +42,7 @@ class SerialPopupActivity : BaseActivity() {
         val serialService: SerialService = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(SERVER_URL)
+                .baseUrl(Prop.serverUrl)
                 .client(OkHttpClient())
                 .build()
                 .create(SerialService::class.java)

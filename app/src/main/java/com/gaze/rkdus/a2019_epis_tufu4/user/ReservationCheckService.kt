@@ -1,12 +1,16 @@
 package com.gaze.rkdus.a2019_epis_tufu4.user
 
 import android.app.*
+import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
-import com.gaze.rkdus.a2019_epis_tufu4.BaseActivity.SERVER_URL
+import androidx.core.app.NotificationCompat
 import com.gaze.rkdus.a2019_epis_tufu4.BaseActivity.TAG
+import com.gaze.rkdus.a2019_epis_tufu4.R
+import com.gaze.rkdus.a2019_epis_tufu4.popup.ManagementPopupActivity
+import com.gaze.rkdus.a2019_epis_tufu4.utils.Prop
 import com.gaze.rkdus.a2019_epis_tufu4.utils.ReservationBackgroundService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -14,10 +18,6 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import android.content.Context
-import androidx.core.app.NotificationCompat
-import com.gaze.rkdus.a2019_epis_tufu4.R
-import com.gaze.rkdus.a2019_epis_tufu4.popup.ManagementPopupActivity
 
 
 class ReservationCheckService : Service() {
@@ -39,7 +39,7 @@ class ReservationCheckService : Service() {
         val backgroundService:ReservationBackgroundService = Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(SERVER_URL)
+                .baseUrl(Prop.serverUrl)
                 .client(OkHttpClient())
                 .build()
                 .create(ReservationBackgroundService::class.java)

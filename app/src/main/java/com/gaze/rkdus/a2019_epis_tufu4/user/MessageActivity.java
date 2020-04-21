@@ -56,6 +56,7 @@ import com.gaze.rkdus.a2019_epis_tufu4.popup.MessagePopupActivity;
 import com.gaze.rkdus.a2019_epis_tufu4.popup.PostCodePopupActivity;
 import com.gaze.rkdus.a2019_epis_tufu4.popup.ProductPopupActivity;
 import com.gaze.rkdus.a2019_epis_tufu4.popup.ProxySignPopupActivity;
+import com.gaze.rkdus.a2019_epis_tufu4.utils.Prop;
 import com.google.gson.Gson;
 
 /*
@@ -750,7 +751,7 @@ public class MessageActivity extends BaseActivity {
 
         @Override
         protected String doInBackground(String... strings) {
-            String search_url = SERVER_URL + strings[0];    // URL
+            String search_url = Prop.INSTANCE.serverUrl + strings[0];    // URL
             // 서버에 메세지 정보 전송
             try {
                 type = strings[1];

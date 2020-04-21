@@ -16,7 +16,7 @@ import java.net.HttpURLConnection;
 public class BaseActivity extends AppCompatActivity {
     public Typeface mTypeface = null;
     public final static String TAG = "LogGoGo";
-    public static final String SERVER_URL = "http://13.125.144.161:8000";
+//    public static final String SERVER_URL = "http://13.125.144.161:8000";
     public static String KAKAO_ID = null;    // 0 : null
     public static String NICKNAME = null;
 

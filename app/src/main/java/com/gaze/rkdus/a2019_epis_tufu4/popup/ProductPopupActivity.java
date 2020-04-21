@@ -15,6 +15,7 @@ import com.gaze.rkdus.a2019_epis_tufu4.R;
 import com.gaze.rkdus.a2019_epis_tufu4.adapter.ProductPopupListAdapter;
 import com.gaze.rkdus.a2019_epis_tufu4.item.ProductItemData;
 import com.gaze.rkdus.a2019_epis_tufu4.utils.ProductService;
+import com.gaze.rkdus.a2019_epis_tufu4.utils.Prop;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -100,7 +101,7 @@ public class ProductPopupActivity extends BaseActivity {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(new NullOnEmptyConverterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(SERVER_URL)
+                .baseUrl(Prop.INSTANCE.serverUrl)
                 .build();
         service = retrofit.create(ProductService.class);
 

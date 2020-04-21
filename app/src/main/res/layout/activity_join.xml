@@ -417,7 +417,7 @@
             <LinearLayout
                 android:layout_marginLeft="@dimen/joinLayoutMargin"
                 android:layout_marginRight="@dimen/joinLayoutMargin"
-                android:id="@id/vowow"
+                android:id="@+id/vowow"
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

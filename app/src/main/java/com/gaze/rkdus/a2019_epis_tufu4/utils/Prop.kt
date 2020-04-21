@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 object Prop {
 
-    private const val serverUrl: String = ""
+    const val serverUrl: String = "-"
 
     val client = OkHttpClient.Builder().apply {
         readTimeout(5, TimeUnit.SECONDS)

@@ -24,6 +24,7 @@ import com.gaze.rkdus.a2019_epis_tufu4.adapter.HospitalReviewListAdapter;
 import com.gaze.rkdus.a2019_epis_tufu4.item.ReviewListItem;
 import com.gaze.rkdus.a2019_epis_tufu4.item.SearchResultData;
 import com.gaze.rkdus.a2019_epis_tufu4.popup.MapPopupActivity;
+import com.gaze.rkdus.a2019_epis_tufu4.utils.Prop;
 import com.gaze.rkdus.a2019_epis_tufu4.utils.ReviewService;
 
 import org.json.JSONException;
@@ -200,7 +201,7 @@ public class HospitalProfileActivity extends BaseActivity {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(new NullOnEmptyConverterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(SERVER_URL)
+                .baseUrl(Prop.INSTANCE.serverUrl)
                 .build();
         service = retrofit.create(ReviewService.class);
 
@@ -317,7 +318,7 @@ public class HospitalProfileActivity extends BaseActivity {
 
         @Override
         protected String doInBackground(String... strings) {
-            String search_url = SERVER_URL + strings[0];    // URL
+            String search_url = Prop.INSTANCE.serverUrl + strings[0];    // URL
             // 서버에 메세지 정보 전송
             try {
                 // String type, ownerName, address, hp, petName, race, petColor, petBirth, neutralization, petGender;
@@ -417,15 +418,15 @@ public class HospitalProfileActivity extends BaseActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
         switch (requestCode) {
             case START_RESERVATION:
-                if(resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     Log.d(TAG, "예약 완료.");
                     // 해당 병원의 예약 횟수 불러오기?
                     profileAsyncTask = new ProfileAsyncTask();
                     profileAsyncTask.execute("/hospital/getReservationCount");
-                }
-                else {
+                } else {
                     Log.d(TAG, "예약 실패.");
                 }
                 break;
