@@ -636,7 +636,7 @@ public class SearchActivity extends BaseActivity {
         protected String doInBackground(String... strings) {
             Log.d(TAG, "SearchAsyncTask doInBackground");
 
-            String search_url = Prop.INSTANCE.serverUrl + strings[0];    // URL
+            String search_url = Prop.INSTANCE.getServerUrl() + strings[0];    // URL
             type = strings[1];
             // POST 전송방식을 위한 설정
             HttpURLConnection con = null;

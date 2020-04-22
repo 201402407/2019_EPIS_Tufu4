@@ -282,7 +282,7 @@ public class UserLoginActivity extends BaseActivity {
     private class NicknameAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
-            String search_url = Prop.INSTANCE.serverUrl + strings[0];    // URL
+            String search_url = Prop.INSTANCE.getServerUrl() + strings[0];    // URL
             // 서버에 메세지 정보 전송
             try {
                 // String type, ownerName, address, hp, petName, race, petColor, petBirth, neutralization, petGender;

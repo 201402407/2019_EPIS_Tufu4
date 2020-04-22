@@ -1,6 +1,11 @@
 package com.gaze.rkdus.a2019_epis_tufu4.utils
 
+import android.app.Application
+import android.content.Context
+import androidx.annotation.StringRes
+import com.gaze.rkdus.a2019_epis_tufu4.R
 import com.google.gson.GsonBuilder
+import net.daum.mf.map.common.ResourceUtils
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -10,8 +15,7 @@ import java.util.concurrent.TimeUnit
 
 
 object Prop {
-
-    const val serverUrl: String = "-"
+    val serverUrl: String = secure.serverUrl
 
     val client = OkHttpClient.Builder().apply {
         readTimeout(5, TimeUnit.SECONDS)

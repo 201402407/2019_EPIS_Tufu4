@@ -66,7 +66,7 @@ SearchActivity에서 검색한 결과 중 특정 병원을 클릭한 경우
  */
 public class HospitalProfileActivity extends BaseActivity {
     public static final int START_RESERVATION = 10;
-    SearchResultData hospitalData;
+    Prop.EntrpsData hospitalData;
     int key;
     private Retrofit retrofit;
     private ReviewService service;
@@ -88,8 +88,8 @@ public class HospitalProfileActivity extends BaseActivity {
         Intent intent = getIntent();
         if(intent != null) {    // 인텐트 null 체크
             if(intent.hasExtra("data")) {
-                hospitalData = (SearchResultData) intent.getSerializableExtra("data");
-                key = hospitalData.getHospital_key();
+                hospitalData = (Prop.EntrpsData) intent.getSerializableExtra("data");
+                key = hospitalData.getEntrpsCode();
             }
             else {
                 Toast.makeText(getApplicationContext(), "필수 값을 불러올 수 없습니다. 이전 화면으로 돌아갑니다.", Toast.LENGTH_LONG).show();
@@ -115,13 +115,14 @@ public class HospitalProfileActivity extends BaseActivity {
         hosinfoReviewRecyclerView = (RecyclerView) findViewById(R.id.hosinfoReviewRecyclerView);
 
         // 병원 정보 객체가 잘 들어왔는지 체크
-        if(checkHospitalInfo()) {
-            setHospitalInfo();
-        }
-        else{
-            Toast.makeText(getApplicationContext(), "해당 병원에 대한 정보가 일부 누락되었습니다. 이전 화면으로 돌아갑니다.", Toast.LENGTH_LONG).show();
-            finish();
-        }
+        setHospitalInfo();
+//        if(checkHospitalInfo()) {
+//            setHospitalInfo();
+//        }
+//        else{
+//            Toast.makeText(getApplicationContext(), "해당 병원에 대한 정보가 일부 누락되었습니다. 이전 화면으로 돌아갑니다.", Toast.LENGTH_LONG).show();
+//            finish();
+//        }
 
         // 전화 이미지 클릭 이벤트
         ivHospitalHPImage.setOnTouchListener(new View.OnTouchListener() {
@@ -164,16 +165,16 @@ public class HospitalProfileActivity extends BaseActivity {
                     case MotionEvent.ACTION_DOWN:   // 클릭 시
                         Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.hosinfo_translate);
                         v.startAnimation(animation);
-                        if(hospitalData.getBoolSIGNUP_APP()) {  // 어플 등록 여부 체크
-                            Log.d(TAG, "key : " + hospitalData.getHospital_key() + ", name : " + hospitalData.getHospital_name());
+                        if(hospitalData.getEntrpsMemberId().length() != 0) {  // 어플 등록 여부 체크
+                            Log.d(TAG, "key : " + hospitalData.getEntrpsCode() + ", name : " + hospitalData.getEntrpsName());
                             final Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     //지연시키길 원하는 밀리초 뒤에 동작
                                     Intent reservationIntent = new Intent(getApplicationContext(), SelectMessageTypeActivity.class);
-                                    reservationIntent.putExtra("key", hospitalData.getHospital_key());
-                                    reservationIntent.putExtra("hospitalName", hospitalData.getHospital_name());
+                                    reservationIntent.putExtra("key", hospitalData.getEntrpsCode());
+                                    reservationIntent.putExtra("hospitalName", hospitalData.getEntrpsName());
                                     startActivityForResult(reservationIntent, START_RESERVATION);
                                 }
                             }, 380);
@@ -201,7 +202,7 @@ public class HospitalProfileActivity extends BaseActivity {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(new NullOnEmptyConverterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(Prop.INSTANCE.serverUrl)
+                .baseUrl(Prop.INSTANCE.getServerUrl())
                 .build();
         service = retrofit.create(ReviewService.class);
 
@@ -249,16 +250,16 @@ public class HospitalProfileActivity extends BaseActivity {
     병원 정보를 화면에 세팅하는 함수
      */
     private void setHospitalInfo() {
-        tvHospitalName.setText(hospitalData.getHospital_name());
-        tvOwnerName.setText(hospitalData.getCeo_name());
-        tvReservationCount.setText(String.valueOf(hospitalData.getReservation_count()) + "건");
-        tvHospitalHP.setText(hospitalData.getPhone());
-        tvScore.setText(hospitalData.getReview_total() + "(" + hospitalData.getReview_count() + ")");
+        tvHospitalName.setText(hospitalData.getEntrpsName());
+        tvOwnerName.setText(hospitalData.getEntrpsRepresentName());
+//        tvReservationCount.setText(String.valueOf(hospitalData.getReservation_count()) + "건");
+        tvHospitalHP.setText(hospitalData.getEntrpsTelNo());
+//        tvScore.setText(hospitalData.getReview_total() + "(" + hospitalData.getReview_count() + ")");
 
-        if(TextUtils.isEmpty(hospitalData.getAddress2()))   // Address1만 존재
-            tvHospitalAddress.setText(hospitalData.getAddress1());
+        if(TextUtils.isEmpty(hospitalData.getEntrpsDetailAddr()))   // Address1만 존재
+            tvHospitalAddress.setText(hospitalData.getEntrpsAddr());
         else                                                // Address1, 2 둘 다 존재
-            tvHospitalAddress.setText(hospitalData.getAddress1() + " " + hospitalData.getAddress2());
+            tvHospitalAddress.setText(hospitalData.getEntrpsAddr() + " " + hospitalData.getEntrpsDetailAddr());
 
         // 전화 url 연결
         tvHospitalHP.setOnClickListener(new View.OnClickListener() {
@@ -296,16 +297,16 @@ public class HospitalProfileActivity extends BaseActivity {
         }
         else {
             // 앱 등록 안되있어도 들어오는지? 그럴거같다.
-            if (TextUtils.isEmpty(hospitalData.getHospital_name()))
-                return false;    // 병원 이름 null 체크
-            if (TextUtils.isEmpty(hospitalData.getCeo_name()))
-                return false;    // 병원 대표자명 null 체크
-            if (TextUtils.isEmpty(hospitalData.getPhone()))
-                return false;    // 병원 전화번호 null 체크
-            if (TextUtils.isEmpty(hospitalData.getAddress1()))
-                return false;    // 병원 주소 null 체크(필수 주소)
-            if (TextUtils.isEmpty(hospitalData.getReview_total()))
-                return false;
+//            if (TextUtils.isEmpty(hospitalData.getHospital_name()))
+//                return false;    // 병원 이름 null 체크
+//            if (TextUtils.isEmpty(hospitalData.getCeo_name()))
+//                return false;    // 병원 대표자명 null 체크
+//            if (TextUtils.isEmpty(hospitalData.getPhone()))
+//                return false;    // 병원 전화번호 null 체크
+//            if (TextUtils.isEmpty(hospitalData.getAddress1()))
+//                return false;    // 병원 주소 null 체크(필수 주소)
+//            if (TextUtils.isEmpty(hospitalData.getReview_total()))
+//                return false;
             return true;
         }
     }
@@ -318,7 +319,7 @@ public class HospitalProfileActivity extends BaseActivity {
 
         @Override
         protected String doInBackground(String... strings) {
-            String search_url = Prop.INSTANCE.serverUrl + strings[0];    // URL
+            String search_url = Prop.INSTANCE.getServerUrl() + strings[0];    // URL
             // 서버에 메세지 정보 전송
             try {
                 // String type, ownerName, address, hp, petName, race, petColor, petBirth, neutralization, petGender;

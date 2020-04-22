@@ -751,7 +751,7 @@ public class MessageActivity extends BaseActivity {
 
         @Override
         protected String doInBackground(String... strings) {
-            String search_url = Prop.INSTANCE.serverUrl + strings[0];    // URL
+            String search_url = Prop.INSTANCE.getServerUrl() + strings[0];    // URL
             // 서버에 메세지 정보 전송
             try {
                 type = strings[1];

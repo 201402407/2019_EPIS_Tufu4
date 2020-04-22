@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.gaze.rkdus.a2019_epis_tufu4.utils.Prop;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

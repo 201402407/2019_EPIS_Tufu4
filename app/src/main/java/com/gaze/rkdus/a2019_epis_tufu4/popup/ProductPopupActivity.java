@@ -101,7 +101,7 @@ public class ProductPopupActivity extends BaseActivity {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(new NullOnEmptyConverterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(Prop.INSTANCE.serverUrl)
+                .baseUrl(Prop.INSTANCE.getServerUrl())
                 .build();
         service = retrofit.create(ProductService.class);
 
